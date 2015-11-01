@@ -15,7 +15,7 @@ var g_ichigo = null;
 /*      Characters     */
 function Character() {
     this.spritesheet = null;
-    this.states = {STANCE: 0, RUN: 1, ATTACK1: 2, TURN: 3};;
+    this.states = {STANCE: 0, RUN: 1, ATTACK1: 2, TURN: 3, JUMP: 4};
     this.animation_slow_factor = 3;
     this.animation_slow = 0;
     this.cur_state = 0;
@@ -26,7 +26,7 @@ function Character() {
     this.xpos_bl = 70;  /* bottom left */
     this.ypos_bl = 330; /* bottom left */
                           /* [y_from_top, width, height, number_of_animation_frames] might modify this to not index properties by integer for style consistency*/
-    this.state_indices = { 0: [0, 100, 110, 6], 1: [110, 100, 110, 6], 2: [220, 115, 150, 5], 3: [370, 70, 120, 1] };
+    this.state_indices = { 0: [0, 100, 110, 6], 1: [110, 100, 110, 6], 2: [220, 115, 150, 5], 3: [370, 70, 120, 1], 4: [18,100,110,3] };
     this.getSI = function() {
         return this.state_indices[this.cur_state];
     };
@@ -206,6 +206,9 @@ function Background() {
             direction = -1;
         else if (state == this.states.RIGHT)
             direction = 1;
+        else if (state == this.states.JUMP){
+            console.log("jumping");
+        }
         else
             return;
         for (var ix in this.bkgd_arr) {
@@ -217,7 +220,6 @@ function Background() {
             this.bkgd_arr[ix].x_pos = newpos;
         }
     };
-
 }
 
 function Resources() {
@@ -322,6 +324,10 @@ function keyDownHandler(event, canvas) {
             g_ichigo.face_left = true;
             canvas.background.cur_state = canvas.background.states.LEFT;
             g_ichigo.cur_state = g_ichigo.states.RUN;
+            break;
+        case 38: //up arrow
+            g_ichigo.cur_state = g_ichigo.states.JUMP;
+            console.log('jump');
             break;
         case 88: //x
             canvas.background.cur_state = canvas.background.states.STILL;
